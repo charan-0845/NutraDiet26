@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+opencv-python
+numpy
+pandas
+torch
+transformers
+ultralytics
+python-multipart
+openpyxl
