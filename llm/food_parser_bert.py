@@ -29,8 +29,16 @@ print(f"Loaded {len(FOOD_LABELS)} labels")
 # LOAD BERT
 # ─────────────────────────────────────────────
 
-MODEL = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-LABEL_EMBEDDINGS = MODEL.encode(FOOD_LABELS, convert_to_tensor=True)
+MODEL = None
+LABEL_EMBEDDINGS = None
+
+
+def _get_bert_model():
+    global MODEL, LABEL_EMBEDDINGS
+    if MODEL is None:
+        MODEL = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+        LABEL_EMBEDDINGS = MODEL.encode(FOOD_LABELS, convert_to_tensor=True)
+    return MODEL, LABEL_EMBEDDINGS
 
 # ─────────────────────────────────────────────
 # WORD → NUMBER (FROM YOUR CODE)
@@ -171,8 +179,9 @@ def detect_count(text):
 # ─────────────────────────────────────────────
 
 def match_label(text, threshold=0.6):
-    emb = MODEL.encode(text, convert_to_tensor=True)
-    scores = util.cos_sim(emb, LABEL_EMBEDDINGS)[0]
+    model, label_embeddings = _get_bert_model()
+    emb = model.encode(text, convert_to_tensor=True)
+    scores = util.cos_sim(emb, label_embeddings)[0]
 
     idx = int(scores.argmax())
     score = float(scores[idx])

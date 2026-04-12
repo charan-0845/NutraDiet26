@@ -48,9 +48,16 @@ def _load_model() -> AutoModelForCausalLM:
     with _lock:
         if _model is None:
             dtype = torch.float16 if torch.cuda.is_available() else torch.float32
-            _tokenizer = AutoTokenizer.from_pretrained(_MODEL_ID, trust_remote_code=True)
+            _tokenizer = AutoTokenizer.from_pretrained(
+                _MODEL_ID,
+                trust_remote_code=True,
+                local_files_only=True,
+            )
             _model = AutoModelForCausalLM.from_pretrained(
-                _MODEL_ID, trust_remote_code=True, torch_dtype=dtype
+                _MODEL_ID,
+                trust_remote_code=True,
+                torch_dtype=dtype,
+                local_files_only=True,
             )
             _model.eval()
             if torch.cuda.is_available():

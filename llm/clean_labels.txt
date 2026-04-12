@@ -12,11 +12,12 @@ apple oats chia seed smoothie
 apple snowballs
 apricot fool
 arhar with spinach (arhar dal aur palak)
-atta dal burfi 
+atta dal burfi
 avial
 baked brinjal in tomato sauce
+baked egg
 baked eggs in tomato sauce
-baked potato with skin 
+baked potato with skin
 baked vegetables
 banana chips (kele ke chips)
 banana groundnut paste/puree
@@ -27,23 +28,33 @@ bengal 5 spice blend (panch phoran)
 besan gatte curry
 besan kadhi with pakodies
 bhatura
+bhel puri
 black channa curry/bengal gram curry (kale chane ki curry)
 boiled egg (ubla anda)
+boiled rice (uble chawal)
 boondi raita
 boti kebab
+bottle gourd burfi (ghiya/lauki burfi)
+bottle gourd kheer (ghiya/lauki kheer)
+bottle gourd raita (ghiya/lauki ka raita)
 bottle gourd soup (ghiya/lauki soup)
 bread roll
 broccoli delight
 brown sauce
 buckwheat pancake (khura)
+butter chicken
+cabbage kofta curry (pattagobhi kofta curry)
 cabbage raita (pattagobhi raita)
 cajun chicken
 canjee
 cardamom cookies (elaichi cookies)
 carrot and fenugreek leaves (gajar methi)
+carrot halwa (gajar ka halwa)
 carrot kheer (gajar ki kheer)
 cauliflower basket
-cereal mix 
+cauliflower kheer (phoolgobhi ki kheer)
+cauliflower kofta curry (phoolgobhi kofta curry)
+cereal mix
 cereal pulse mix with amylase rice flour
 channa murmura premix
 chapati/roti
@@ -61,21 +72,24 @@ chhena poda
 chicken and tomato towers
 chicken chowmein
 chicken consomme (clear chicken soup)
+chicken curry
 chicken kebab
 chicken lasagne
-chicken curry
+chicken pakora/pakoda
+chicken pulao
 chicken stew
 chicken sweet and sour
 chicken yakhni
 chilli chicken
 chocolate cream shells
 chocolate eclairs
+chocolate sauce
 choux swans
 christmas cake
 chum chum
 classic seasoned black beans
 clear tomato soup (tamatar ka soup)
-club sandwich 
+club sandwich
 coco pine cooler
 coconut finger
 coffee drops
@@ -99,10 +113,12 @@ cucumber raita (kheere ka raita)
 cumin infused water (jeere/zeere ka pani)
 cumin seeds baghar (jeera baghar/tadka)
 curd dip
-curd dressing 
+curd dressing
+curd rice (dahi bhaat/dahi chawal/ perugu annam/daddojanam/thayir saadam)
 curried cauliflower soup
 custard tart
 dahi vadas/dahi bhalla
+dal makhani
 dal moong
 dal parantha/paratha
 dalma
@@ -118,15 +134,20 @@ dry washed urad
 ducheese potato
 dum aloo
 egg curry (anda curry)
+egg cutlet (anda cutlet)
 egg drop soup
 egg halwa (ande ka halwa)
 egg in a pepper
 egg nog
+egg pakora/pakoda (ande ke pakode)
+egg sauce
 eggplant/brinjal rice (vangi bhat)
 espreso coffee
 fermented bamboo shoot pickle (mesu pickle)
 fermented bengal gram vada (khameerikrit/ufna hua channa dal ka vada)
 fish curry (machli curry)
+fish cutlet (machli ka cutlet)
+fish in coconut milk (nariyal ke doodh ke saath machli)
 fish orly
 fish pakora/pakoda
 fish pie
@@ -136,7 +157,7 @@ flan pastry
 flattened rice cutlet (chirwa cutlet/chivda cutlet/poha cutlet)
 flavoured milkshake
 fruit flan
-fruit loaf 
+fruit loaf
 fruit punch (with squashes)
 garam masala
 ghiya/lauki kofta curry
@@ -151,10 +172,11 @@ grape and orange whip
 gravy for kofta
 green chickpeas pulao (choliya pulao/hare chane ka pulao)
 green chilli raita (hari mirch ka raita)
+green chilli sauce
 green chutney
 green gram whole with baghar (sabut moong dal with tadka)
 greenpea cookies
-gujarati handvo 
+gujarati handvo
 gulab jamun with khoya
 gum icing
 gun powder chutney
@@ -163,7 +185,7 @@ handi chicken
 hawain salad
 home made egg noodles
 honey banana cream
-horsegram dal (kulthi dal) 
+horsegram dal (kulthi dal)
 hot and sour soup
 hot chocolate
 hot cocoa
@@ -198,10 +220,12 @@ lemonade
 lentil soup
 lichi squash
 lobia curry
+lotus seed halwa (kamal gattay ka halwa)
 lotus stem curry (kamal kakdi curry)
 low calorie quick mayonnaise
 macroni cheese pie
 maize porridge
+makhana kheer
 makki ki roti
 mal pua
 mango cheesecake
@@ -221,6 +245,7 @@ melting moments
 methi chaman
 milk cake
 milk cookies
+minced meat ball curry
 minced meat cutlet
 minced meat pie
 mint and peanut sandwich
@@ -230,6 +255,8 @@ mixed dal
 mixed pulse and vegetable salad
 mooli bhujia
 moong bean dosa (pesarattu)
+moong dal halwa
+moong dal kheer
 moti mahal dal (urad rajmah mix dal)
 murmura (puffed rice)
 mushroom matar
@@ -246,16 +273,25 @@ onion raita (pyaaz ka raita)
 orange cream tart
 orange gateau
 pancake
+paneer curry
+paneer kheer
+paneer kofta curry
 paneer soup
 papdi
 parsley potato
 pasta hot pot
 pasta salad
 pasta spinach sauce
+paushtik ladoo
 paushtik roti
 pav bhaji
 pavlova
+pea curry (matar ki sabzi)
+pea keema curry (matar keema ki sabzi)
 pea kofta curry (matar kofta curry)
+pea mushroom curry (matar mushroom)
+pea paneer curry (matar paneer)
+pea potato curry (aloo matar)
 pea vadi curry
 peach blueberry preserves
 peanut brittle (moongfali ki chikki)
@@ -267,8 +303,9 @@ pearl millet infant food (bajra shishu aahaar)
 peas pulao (matar pulao)
 penne platter
 phirni
-pickled cabbage 
+pickled cabbage
 pin wheel biscuit
+pineapple cake
 pineapple tart
 pineapple upside down pudding
 pizza
@@ -280,9 +317,11 @@ poshtik chilla/cheela
 poshtik cutlet
 poshtik namak paras
 potato capsicum (shimla mirch aloo)
+potato curry (aloo ki sabzi)
 potato nests
 potato salad (aloo ka salaad)
 potato with curd
+prawn curry (with coconut) (jhinga curry)
 prawn sandwich
 pulse mix
 putharekulu
@@ -296,12 +335,13 @@ rasbhari
 raspberry bavarian cream
 raw mango drink (aam panna)
 raw papaya with coconut (papaya thoran)
-raw turnip with coconut 
+raw turnip with coconut
 ribbon sandwich
 rice flakes (chiwda/aval)
+rice kheer (chawal ki kheer)
 rice puttu (ari puttu)
 rice upma
-roast potatoes 
+roast potatoes
 roasted cauliflower steak
 roghan josh
 saffron milk (kesariya doodh)
@@ -316,13 +356,18 @@ sauteed radishes with green beans
 schezwan chutney
 scotch egg
 scrambled egg (ande ki bhurji)
+semolina burfi (suji/rava burfi)
 semolina cake (suji/rava cake)
 semolina dosa (suji/rava dosa)
+semolina halwa (suji ka halwa)
+semolina kheer (suji/rava kheer)
 semolina milk drink (thari kanji)
 semolina porridge (suji/rava daliya)
 semolina upma (suji/rava upma)
+sesame ladoo (til ke ladoo)
 sesame toast
 sev (omapodi/karapusa)
+shahi suji halwa
 shahi tukre
 shishu ahar
 short bread cookies
@@ -331,19 +376,23 @@ sour lentils (khatti dal)
 soya chikki
 soya chunks korma (nutrinugget korma)
 soya roti
+soyabean curry
 spaghetti and cheese balls in tomato sauce
 spaghetti bolognese
 spanish rice
-spicy corn chaat 
-spinach and paneer souffle 
+spicy corn chaat
+spinach and paneer souffle
+spinach mushroom scrambled egg (palak mushroom bhurji)
 spinach poori (palak poori)
+split bengal gram burfi/fudge (channa dal burfi)
 split bengal gram dal (channa dal)
 spring basket salad
 spring roll
 sprouted moong pulao
-starfruit preserves 
+starfruit preserves
 steamed cake with chocolate sauce
 stewed apple
+strawberry and vanilla cake with butter icing
 stuffed bittergourd (wet) (bharwa karele)
 stuffed brinjal (bharwa baingan)
 stuffed okra (bharwa bhindi)
@@ -354,6 +403,7 @@ sweet raita (meetha raita)
 sweetened yogurt (shrikhand)
 swiss roll
 talaumein soup
+tandoori chicken
 tandoori fish
 thandai
 thickened sweetened milk (rabri)
@@ -362,15 +412,19 @@ tomato aspic
 tomato fish
 tomato ketchup
 tomato puree
+tutti fruitti biscuit
 tutti frutti cake
 uttapam
+vanilla ice cream with egg
+vanilla ice cream without egg
 veg manchurian
 veg paneer stew
-vegetable curry with coconut 
+vegetable biryani/biriyani
+vegetable curry with coconut
 vegetable cutlet
 vegetable jalfrezi
 vegetable samosa
-vegetables stir fry 
+vegetables stir fry
 vegetarian egg kofta curry
 vermicelli kheer (semiya/seviyan ki kheer)
 washed urad dal (dhuli urad ki dal)

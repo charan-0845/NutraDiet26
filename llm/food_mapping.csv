@@ -31,13 +31,13 @@ orange milkshake with ice cream (narangi milkshake ice cream ke saath),flavour
 egg nog,egg nog
 fried egg ,egg nog
 poached egg,egg nog
-baked egg ,egg nog
-egg sauce,egg nog
+baked egg ,baked egg
+egg sauce,egg sauce
 sweet lassi (meethi lassi),lassi (salted)
 lassi (salted),lassi (salted)
-cheese and chilli sandwich ,chilli chicken
+cheese and chilli sandwich ,club sandwich 
 chilli chicken,chilli chicken
-green chilli sauce,chilli chicken
+green chilli sauce,green chilli sauce
 egg sandwich (ande ka sandwich),peanut butter cucumber sandwich
 cucumber sandwich (kheere ka sandwich),peanut butter cucumber sandwich
 cheese and pineapple sandwich (cheese aur ananas ka sandwich),peanut butter cucumber sandwich
@@ -77,7 +77,7 @@ mushroom and cheese sandwich (toasted),cheese toast
 cheese toast,cheese toast
 french sandwich (toasted),cheese toast
 sesame toast,sesame toast
-sesame ladoo (til ke ladoo),sesame toast
+sesame ladoo (til ke ladoo),sesame ladoo (til ke ladoo)
 cracked wheat porridge (meetha daliya),semolina porridge (suji/rava daliya)
 semolina porridge (suji/rava daliya),semolina porridge (suji/rava daliya)
 vermicelli porridge (semiya/seviyan porridge),semolina porridge (suji/rava daliya)
@@ -97,7 +97,7 @@ boiled egg (ubla anda),boiled egg (ubla anda)
 scrambled egg (ande ki bhurji),scrambled egg (ande ki bhurji)
 indian style egg bhujia (anda bhujia (indian style)),scrambled egg (ande ki bhurji)
 plain omelette/omlet,corn omelette/omlet
-stuffed egg omelette/omlet,corn omelette/omlet
+stuffed egg omelette/omlet,scrambled egg (ande ki bhurji)
 french omelette/omlet,corn omelette/omlet
 puffy omelette/omlet,corn omelette/omlet
 orange omelette/omlet,corn omelette/omlet
@@ -171,9 +171,9 @@ methi parantha/paratha,dal parantha/paratha
 cauliflower parantha/paratha (phoolgobhi ka parantha/paratha),cauliflower basket
 potato cauliflower (aloo gobhi),cauliflower basket
 cauliflower with coconut (nariyal ke saath phoolgobhi),cauliflower basket
-cauliflower kofta curry (phoolgobhi kofta curry),cauliflower basket
+cauliflower kofta curry (phoolgobhi kofta curry),cauliflower kofta curry (phoolgobhi kofta curry)
 cauliflower musallam (phoolgobhi musallam),cauliflower basket
-cauliflower kheer (phoolgobhi ki kheer),cauliflower basket
+cauliflower kheer (phoolgobhi ki kheer),cauliflower kheer (phoolgobhi ki kheer)
 cauliflower pakora/pakoda (phoolgobhi ke pakode),cauliflower basket
 "cauliflower, pea and potato bhujia (phoolgobhi, matar aur aloo bhujia)",cauliflower basket
 cauliflower basket,cauliflower basket
@@ -188,16 +188,16 @@ sprouted moong poha ,sprouted moong pulao
 paneer parantha/paratha,paneer soup
 paneer pulao,paneer soup
 paneer kaathi roll,paneer soup
-pea paneer curry (matar paneer),paneer soup
-paneer curry,paneer soup
-paneer kofta curry,paneer soup
+pea paneer curry (matar paneer),pea paneer curry (matar paneer)
+paneer curry,paneer curry
+paneer kofta curry,paneer kofta curry
 shahi paneer,paneer soup
 paneer in butter sauce,paneer soup
 methi malai paneer,paneer soup
 chilli paneer,paneer soup
 paneer makhana korma,paneer soup
 kadhai paneer,paneer soup
-paneer kheer,paneer soup
+paneer kheer,paneer kheer
 paneer and pea samosa (paneer matar ka samosa),paneer soup
 paneer potato cutlet (paneer aloo cutlet),paneer soup
 paneer shaslik/tikka,paneer soup
@@ -217,29 +217,29 @@ spinach peanut namak paras (palak moongfali namak paras),spinach poori (palak po
 spinach and potato (palak aloo),spinach poori (palak poori)
 dal stuffed poori,mixed dal
 mixed dal,mixed dal
-boiled rice (uble chawal),spanish rice
+boiled rice (uble chawal),boiled rice (uble chawal)
 "lemon rice (pulihora, elumichai sadam, chitranna)",spanish rice
 sweet rice (meethe chawal),spanish rice
-curd rice (dahi bhaat/dahi chawal/ perugu annam/daddojanam/thayir saadam),spanish rice
+curd rice (dahi bhaat/dahi chawal/ perugu annam/daddojanam/thayir saadam),curd rice (dahi bhaat/dahi chawal/ perugu annam/daddojanam/thayir saadam)
 tamarind rice (chintapandu pulihora/puliyodharai/puli sadam/huli anna),spanish rice
 spanish rice,spanish rice
 chinese fried rice,spanish rice
-rice kheer (chawal ki kheer),spanish rice
+rice kheer (chawal ki kheer),rice kheer (chawal ki kheer)
 mexican rice,spanish rice
 rice dal porridge (chawal dal ki khichdi/khichri),spanish rice
-black rice kheer (chak-hao kheer),spanish rice
+black rice kheer (chak-hao kheer),makhana kheer
 rice murukku,spanish rice
 plain pulao,plain pulao
 mixed vegetable pulao,plain pulao
 mushroom pulao,plain pulao
 peanut pulao ,plain pulao
-chicken pulao,plain pulao
+chicken pulao,chicken pulao
 navratan pulao,navratan pulao
 cumin pulao (jeera/zeera pulao),navratan pulao
 green chickpeas pulao (choliya pulao/hare chane ka pulao),green chickpeas pulao (choliya pulao/hare chane ka pulao)
 sweet split chickpea roti (sweet channa dal roti/puranpoli),green chickpeas pulao (choliya pulao/hare chane ka pulao)
 mutton biryani/biriyani,mutton biryani/biriyani
-vegetable biryani/biriyani,mutton biryani/biriyani
+vegetable biryani/biriyani,vegetable biryani/biriyani
 macroni cheese pie,macroni cheese pie
 cottage cheese pie,macroni cheese pie
 vegetable and cheese pie,macroni cheese pie
@@ -259,19 +259,19 @@ fettuccine with spinach sauce,pasta spinach sauce
 pasta spinach sauce,pasta spinach sauce
 naan,naan
 bhatura,bhatura
-bhel puri ,bhatura
+bhel puri ,murmura (puffed rice)
 idli,idli
 instant idli (with semolina),idli
 masala dosa,plain dosa
 plain dosa,plain dosa
 jowar dosa,plain dosa
 semolina dosa (suji/rava dosa),semolina dosa (suji/rava dosa)
-semolina kheer (suji/rava kheer),semolina dosa (suji/rava dosa)
-semolina halwa (suji ka halwa),semolina dosa (suji/rava dosa)
-semolina ladoo with khoya (suji/rava aur khoye ke ladoo ),semolina dosa (suji/rava dosa)
-semolina ladoo with coconut (suji/rava aur nariyal ke ladoo ),semolina dosa (suji/rava dosa)
-semolina burfi (suji/rava burfi),semolina dosa (suji/rava dosa)
-semolina ladoo with nuts (suji/rava ladoo with nuts),semolina dosa (suji/rava dosa)
+semolina kheer (suji/rava kheer),semolina kheer (suji/rava kheer)
+semolina halwa (suji ka halwa),semolina halwa (suji ka halwa)
+semolina ladoo with khoya (suji/rava aur khoye ke ladoo ),khoa ladoo
+semolina ladoo with coconut (suji/rava aur nariyal ke ladoo ),khoa ladoo
+semolina burfi (suji/rava burfi),semolina burfi (suji/rava burfi)
+semolina ladoo with nuts (suji/rava ladoo with nuts),khoa ladoo
 semolina idli (suji/rava idli),semolina dosa (suji/rava dosa)
 semolina dhokla (suji/rava dhokla),semolina dosa (suji/rava dosa)
 onion tomato uttapam,uttapam
@@ -283,16 +283,16 @@ washed urad dal (dhuli urad ki dal),washed urad dal (dhuli urad ki dal)
 split bengal gram with bottle gourd (channa dal with ghiya/lauki),split bengal gram dal (channa dal)
 split bengal gram sweet rice (channa dal sweet rice),split bengal gram dal (channa dal)
 split bengal gram dal and vegetable pulao (channa dal and vegetable pulao),split bengal gram dal (channa dal)
-split bengal gram burfi/fudge (channa dal burfi),split bengal gram dal (channa dal)
+split bengal gram burfi/fudge (channa dal burfi),split bengal gram burfi/fudge (channa dal burfi)
 split bengal gram dal (channa dal),split bengal gram dal (channa dal)
 dry washed urad,dry washed urad
 whole urad (urad ki dal),dry washed urad
 urad special dehusked,dry washed urad
 urad sabut special,dry washed urad
 whole moong (moong ki dal),dal moong
-moong dal kheer,dal moong
-moong dal halwa,dal moong
-rice moong dal cheela (chawal aur moong dal ka cheela),dal moong
+moong dal kheer,moong dal kheer
+moong dal halwa,moong dal halwa
+rice moong dal cheela (chawal aur moong dal ka cheela),semolina dosa (suji/rava dosa)
 moong dal stuffed cheela/chilla (moong dal ka cheela/chilla),dal moong
 moong dal with vadi,dal moong
 moong dal mixture,dal moong
@@ -302,10 +302,10 @@ whole moth (moth ki dal),whole moth (moth ki dal)
 moti mahal dal (urad rajmah mix dal),moti mahal dal (urad rajmah mix dal)
 black channa curry/bengal gram curry (kale chane ki curry),black channa curry/bengal gram curry (kale chane ki curry)
 black channa pulao/ bengal gram pulao (kale chane ka pulao),black channa curry/bengal gram curry (kale chane ki curry)
-chickpeas curry (safed channa curry),egg curry (anda curry)
+chickpeas curry (safed channa curry),kabuli channa curry
 egg curry (anda curry),egg curry (anda curry)
 lobia curry,lobia curry
-soyabean curry,soya roti
+soyabean curry,soyabean curry
 soyabean muthias,soya roti
 soyabean tikki,soya roti
 soyabean namak paras,soya roti
@@ -319,17 +319,17 @@ khasta kachori,khatta channa
 potato capsicum (shimla mirch aloo),potato capsicum (shimla mirch aloo)
 stuffed capsicum (bharwa shimla mirch),potato capsicum (shimla mirch aloo)
 cabbage and peas (pattagobhi aur matar),cabbage raita (pattagobhi raita)
-cabbage kofta curry (pattagobhi kofta curry),cabbage raita (pattagobhi raita)
-cabbage kheer (pattagobhi ki kheer),cabbage raita (pattagobhi raita)
+cabbage kofta curry (pattagobhi kofta curry),cabbage kofta curry (pattagobhi kofta curry)
+cabbage kheer (pattagobhi ki kheer),carrot kheer (gajar ki kheer)
 cabbage rolls (dry) ((pattagobhi rolls) (dry)),cabbage raita (pattagobhi raita)
-cabbage rolls (curry) ((pattagobhi rolls)(curry)),cabbage raita (pattagobhi raita)
+cabbage rolls (curry) ((pattagobhi rolls)(curry)),vegetable curry with coconut 
 cabbage raita (pattagobhi raita),cabbage raita (pattagobhi raita)
 carrot and fenugreek leaves (gajar methi),carrot and fenugreek leaves (gajar methi)
 potato fenugreek (aloo methi),ducheese potato
 dry potato (sookhe aloo),ducheese potato
-pea potato curry (aloo matar),ducheese potato
+pea potato curry (aloo matar),pea potato curry (aloo matar)
 potato bonda (aloo bonda),ducheese potato
-potato curry (aloo ki sabzi),ducheese potato
+potato curry (aloo ki sabzi),potato curry (aloo ki sabzi)
 ducheese potato,ducheese potato
 brinjal bhartha (baingan ka bhartha),stuffed brinjal (bharwa baingan)
 stuffed brinjal (bharwa baingan),stuffed brinjal (bharwa baingan)
@@ -342,18 +342,18 @@ raw papaya with coconut (papaya thoran),raw papaya with coconut (papaya thoran)
 stuffed okra (bharwa bhindi),stuffed okra (bharwa bhindi)
 stuffed round gourd (bharwa tinde),stuffed okra (bharwa bhindi)
 stuffed tomatoes (bharwa tamatar),stuffed okra (bharwa bhindi)
-pea mushroom curry (matar mushroom),mushroom matar
+pea mushroom curry (matar mushroom),pea mushroom curry (matar mushroom)
 mushroom matar,mushroom matar
 fricassee of mushroom,mushroom matar
-pea curry (matar ki sabzi),peas pulao (matar pulao)
-pea keema curry (matar keema ki sabzi),peas pulao (matar pulao)
+pea curry (matar ki sabzi),pea curry (matar ki sabzi)
+pea keema curry (matar keema ki sabzi),pea keema curry (matar keema ki sabzi)
 peas kachori (matar kachori),peas pulao (matar pulao)
 peas pulao (matar pulao),peas pulao (matar pulao)
 pea vadi curry,pea vadi curry
 lotus stem curry (kamal kakdi curry),lotus stem curry (kamal kakdi curry)
 lotus stem kofta curry (kamal kakdi kofta curry),lotus stem curry (kamal kakdi curry)
-lotus seed halwa (kamal gattay ka halwa),lotus stem curry (kamal kakdi curry)
-lotus stem pickle (kamal kakdi ka achar),lotus stem curry (kamal kakdi curry)
+lotus seed halwa (kamal gattay ka halwa),lotus seed halwa (kamal gattay ka halwa)
+lotus stem pickle (kamal kakdi ka achar),mango pickle (aam ka achaar)
 gravy for kofta,gravy for kofta
 pea kofta curry (matar kofta curry),pea kofta curry (matar kofta curry)
 spinach kofta curry (palak kofta curry),pea kofta curry (matar kofta curry)
@@ -380,13 +380,13 @@ methi chaman,methi chaman
 methi thepla,methi chaman
 sarson ka saag,sarson ka saag
 jackfruit sabzi (kathal ki sabzi),jackfruit/kathal (dry)
-jackfruit kofta curry (kathal ka kofta curry),jackfruit/kathal (dry)
+jackfruit kofta curry (kathal ka kofta curry),ghiya/lauki kofta curry
 jackfruit/kathal (dry),jackfruit/kathal (dry)
 jackfruit fritters (ponsa mulik/kathal ka pakora),jackfruit/kathal (dry)
 avial,avial
 al yakhani,al yakhani
-makhana kheer,al yakhani
-dal makhani,al yakhani
+makhana kheer,makhana kheer
+dal makhani,dal makhani
 roghan josh,roghan josh
 spinach mutton (palak mutton),mutton pulao
 mutton yakhni,mutton pulao
@@ -406,17 +406,17 @@ shammi kebab,boti kebab
 boti kebab,boti kebab
 scotch egg,scotch egg
 vegeterian scotch egg,scotch egg
-chicken stew
-butter chicken,chicken stew
-fried chicken with tomato sauce (fried chicken tamatar ki chutney kay saath),chicken stew
 chicken stew,chicken stew
-roast chicken,chicken stew
-tomato chicken,chicken stew
-creamy chicken,chicken stew
-ginger chicken,chicken stew
-chicken korma,chicken stew
-lemon chicken,chicken stew
-tandoori chicken,tandoori fish
+butter chicken,butter chicken
+fried chicken with tomato sauce (fried chicken tamatar ki chutney kay saath),chicken curry
+chicken stew,chicken stew
+roast chicken,butter chicken
+tomato chicken,chicken curry
+creamy chicken,butter chicken
+ginger chicken,butter chicken
+chicken korma,butter chicken
+lemon chicken,butter chicken
+tandoori chicken,tandoori chicken
 tandoori fish,tandoori fish
 chicken kebab,chicken kebab
 vegetable seekh kebab,chicken kebab
@@ -425,7 +425,7 @@ soya seekh kebab,chicken kebab
 fish curry (machli curry),fish curry (machli curry)
 fried fish (indian style) (tali hui machli),fish curry (machli curry)
 fried fish and chips (english style) (tali hui machli aur chips),fish curry (machli curry)
-fish cutlet (machli ka cutlet),fish curry (machli curry)
+fish cutlet (machli ka cutlet),fish cutlet (machli ka cutlet)
 bengal fish curry (bengali machli curry),fish curry (machli curry)
 tomato fish,tomato fish
 fish finger,tomato fish
@@ -461,10 +461,10 @@ onion tomato baghar (pyaaz tamatar ka tadka),onion raita (pyaaz ka raita)
 peanut raita (mungfali ka raita),peanut raita (mungfali ka raita)
 peanut cutlet (mungfali ke cutlet),peanut raita (mungfali ka raita)
 peanut chutney (mungfali ki chutney),peanut raita (mungfali ka raita)
-bottle gourd raita (ghiya/lauki ka raita),bottle gourd soup (ghiya/lauki soup)
-bottle gourd burfi (ghiya/lauki burfi),bottle gourd soup (ghiya/lauki soup)
+bottle gourd raita (ghiya/lauki ka raita),bottle gourd raita (ghiya/lauki ka raita)
+bottle gourd burfi (ghiya/lauki burfi),bottle gourd burfi (ghiya/lauki burfi)
 stuffed bottle gourd (stuffed ghiya/lauki),bottle gourd soup (ghiya/lauki soup)
-bottle gourd kheer (ghiya/lauki kheer),bottle gourd soup (ghiya/lauki soup)
+bottle gourd kheer (ghiya/lauki kheer),bottle gourd kheer (ghiya/lauki kheer)
 bottle gourd soup (ghiya/lauki soup),bottle gourd soup (ghiya/lauki soup)
 cucumber raita (kheere ka raita),cucumber raita (kheere ka raita)
 cucumber sharbat (kheere ka sharbat),cucumber raita (kheere ka raita)
@@ -490,13 +490,13 @@ saunth/sonth chutney with tamarind/imli,saunth/sonth chutney with tamarind/imli
 tamarind chutney (chintapandu pachadi/puli chutney),saunth/sonth chutney with tamarind/imli
 vermicelli kheer (semiya/seviyan ki kheer),vermicelli kheer (semiya/seviyan ki kheer)
 carrot kheer (gajar ki kheer),carrot kheer (gajar ki kheer)
-carrot halwa (gajar ka halwa),carrot kheer (gajar ki kheer)
+carrot halwa (gajar ka halwa),carrot halwa (gajar ka halwa)
 peanut sago vada (sabudana mungfali vada),carrot kheer (gajar ki kheer)
 semolina carrot vada (suji gajar vada),carrot kheer (gajar ki kheer)
 carrot murabba (gajar ka murabba),carrot kheer (gajar ki kheer)
 jhatpat achar with carrot (jhatpat achaar gajar ke saath),carrot kheer (gajar ki kheer)
 phirni,phirni
-shahi suji halwa,shahi tukre
+shahi suji halwa,shahi suji halwa
 shahi tukre,shahi tukre
 egg halwa (ande ka halwa),egg halwa (ande ka halwa)
 potato halwa (aloo ka halwa),egg halwa (ande ka halwa)
@@ -512,8 +512,8 @@ mango vanilla custard,custard tart
 chocolate ice cream,mango ice cream
 mango ice cream,mango ice cream
 caramel ice cream,mango ice cream
-vanilla ice cream without egg,mango ice cream
-vanilla ice cream with egg,mango ice cream
+vanilla ice cream without egg,vanilla ice cream with egg
+vanilla ice cream with egg,vanilla ice cream with egg
 strawberry ice cream,mango ice cream
 chocochip ice cream,mango ice cream
 choconut ice cream,mango ice cream
@@ -539,11 +539,11 @@ cold vanilla souffle,fish souffle
 cold chocolate souffle,fish souffle
 hot lemon souffle,fish souffle
 masala souffle ,fish souffle
-chicken and cheese souffle,fish souffle
+chicken and cheese souffle,spinach and paneer souffle
 pineapple souffle ,pineapple tart
 pineapple tart,pineapple tart
 pineapple pastry ,pineapple tart
-pineapple cake ,pineapple tart
+pineapple cake ,pineapple cake
 cold pineapple souffle,pineapple tart
 pineapple jam ,pineapple tart
 apple mousse,apple mousse
@@ -612,10 +612,10 @@ potato pakora/pakoda (aloo pakoda),fish pakora/pakoda
 mixed vegetable pakora/pakoda,fish pakora/pakoda
 spinach pakora/pakoda (palak pakoda),fish pakora/pakoda
 methi pakora/pakoda (methi ke pakode),fish pakora/pakoda
-egg pakora/pakoda (ande ke pakode),fish pakora/pakoda
+egg pakora/pakoda (ande ke pakode),egg pakora/pakoda (ande ke pakode)
 bread pakora/pakoda,fish pakora/pakoda
 paneer pakora/pakoda,fish pakora/pakoda
-chicken pakora/pakoda,fish pakora/pakoda
+chicken pakora/pakoda,chicken pakora/pakoda
 fish pakora/pakoda,fish pakora/pakoda
 potato samosa (aloo ka samosa),vegetable samosa
 minced meat samosa (keema ka samosa),vegetable samosa
@@ -623,7 +623,7 @@ vegetable samosa,vegetable samosa
 mathri,mathri
 pearl millet mathri (bajra mathri),mathri
 vegetable cutlet,vegetable cutlet
-egg cutlet (anda cutlet),vegetable cutlet
+egg cutlet (anda cutlet),egg cutlet (anda cutlet)
 flattened rice cutlet (chirwa cutlet/chivda cutlet/poha cutlet),flattened rice cutlet (chirwa cutlet/chivda cutlet/poha cutlet)
 vegetable burger,cheese patties
 cheese patties,cheese patties
@@ -665,7 +665,7 @@ cheese balls,cheese balls
 cheese straws,cheese balls
 minced meat patties,minced meat cutlet
 minced meat pancake (with chicken),minced meat cutlet
-minced meat ball curry,minced meat cutlet
+minced meat ball curry,keema kofta curry
 minced meat cutlet,minced meat cutlet
 apple cake (seb ka cake),apple cake (seb ka cake)
 banana cake (kele ka cake),apple cake (seb ka cake)
@@ -676,7 +676,7 @@ chocolate chiffon cake,lemon chiffon pie
 lemon chiffon pie,lemon chiffon pie
 orange chiffon pie,lemon chiffon pie
 christmas cake,christmas cake
-strawberry and vanilla cake with butter icing,gum icing
+strawberry and vanilla cake with butter icing,strawberry and vanilla cake with butter icing
 butter icing,gum icing
 chocolate butter icing,gum icing
 royal icing,gum icing
@@ -728,18 +728,18 @@ danish cookies,danish cookies
 short bread cookies,short bread cookies
 raspberry shortbread cookies,short bread cookies
 melting moments,melting moments
-wheat flour and moong dal burfi (atta aur moong dal ki burfi),cracked wheat and green gram dal premix (dalia moong dal premix)
+wheat flour and moong dal burfi (atta aur moong dal ki burfi),gram flour burfi (besan burfi)
 cracked wheat and green gram dal premix (dalia moong dal premix),cracked wheat and green gram dal premix (dalia moong dal premix)
 pearl millet ladoo (bajra ladoo),amaranth ladoo (rajgira ladoo)
 amaranth ladoo (rajgira ladoo),amaranth ladoo (rajgira ladoo)
-paushtik ladoo,paushtik roti
+paushtik ladoo,paushtik ladoo
 paushtik roti,paushtik roti
 dhokla,dhokla
 khaman (dhokla),dhokla
 instant dhokla,dhokla
 dal dhokli,dhokla
 hot chocolate,hot chocolate
-chocolate sauce,hot chocolate
+chocolate sauce,chocolate sauce
 jal jeera,jal jeera
 gingo,gingo
 mintade,mintade
@@ -792,16 +792,16 @@ soya chunks and peas (nutrinugget matar),soya chunks korma (nutrinugget korma)
 spinach mushroom (palak mushroom),creamed spinach
 creamed spinach and mushroom,creamed spinach
 creamed spinach,creamed spinach
-spinach mushroom scrambled egg (palak mushroom bhurji),creamed spinach
+spinach mushroom scrambled egg (palak mushroom bhurji),scrambled egg (ande ki bhurji)
 shahi chicken masala,handi chicken
 afghani chicken,handi chicken
 handi chicken,handi chicken
 broccoli chicken ala king,broccoli delight
 broccoli delight,broccoli delight
 chicken sweet and sour,chicken sweet and sour
-fish in coconut milk (nariyal ke doodh ke saath machli),saffron milk (kesariya doodh)
+fish in coconut milk (nariyal ke doodh ke saath machli),fish curry (machli curry)
 saffron milk (kesariya doodh),saffron milk (kesariya doodh)
-prawn curry (with coconut) (jhinga curry),prawn sandwich
+prawn curry (with coconut) (jhinga curry),fish curry (machli curry)
 prawn sandwich,prawn sandwich
 curd with potatoes (dahi aloo),potato with curd
 poha with curd (poha aur dahi),potato with curd
@@ -921,7 +921,7 @@ kidney bean sandwich with cottage cheese,kidney bean sandwich with cottage chees
 cardamom cookies (elaichi cookies),cardamom cookies (elaichi cookies)
 almond cardamom cake (badam elaichi cake),cardamom cookies (elaichi cookies)
 cranberry cookies,cranberry cookies
-tutti fruitti biscuit,tutti frutti cake
+tutti fruitti biscuit,tutti fruitti biscuit
 tutti frutti cake,tutti frutti cake
 peach blueberry preserves,peach blueberry preserves
 pear preserves (naashpati ka murabba),pear preserves (naashpati ka murabba)

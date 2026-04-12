@@ -22,6 +22,7 @@ def parse_food_items(text: str = None, moondream_text: str = None):
             "name": item["name"],
             "quantity_grams": item["quantity_grams"],
             "source": item.get("source", "unknown"),
+            "confidence": item.get("confidence", 1.0),
         }
         for item in results
     ]

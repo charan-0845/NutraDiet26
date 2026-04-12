@@ -29,14 +29,14 @@
                 <p>Use the form below to run the same backend model powering <code>/predict</code>.</p>
             </div>
         </section>
-
+ 
         <main class="workspace">
             <section class="panel input-panel">
                 <div class="panel-header">
                     <p class="panel-kicker">Input</p>
                     <h2>Analyze a food image</h2>
                 </div>
-
+ 
                 <form id="predict-form" class="predict-form">
                     <label class="dropzone" for="file-input">
                         <input id="file-input" name="file" type="file" accept="image/*" required>
@@ -45,12 +45,12 @@
                             <span class="dropzone-subtitle">JPG, PNG, or WEBP</span>
                         </div>
                     </label>
-
+ 
                     <div class="preview-wrap">
                         <img id="preview-image" alt="Food preview" hidden>
                         <div id="preview-empty" class="preview-empty">Image preview appears here</div>
                     </div>
-
+ 
                     <div class="field-grid">
                         <fieldset class="field mode-field">
                             <span>Mode</span>
@@ -65,7 +65,7 @@
                                 </label>
                             </div>
                         </fieldset>
-
+ 
                         <label class="field description-field">
                             <span>Meal description</span>
                             <textarea
@@ -76,23 +76,25 @@
                             <small class="field-hint">Describe the food and include weight or quantity in the same text.</small>
                         </label>
                     </div>
-
+ 
                     <button id="submit-button" class="submit-button" type="submit">Analyze Meal</button>
                 </form>
             </section>
-
+ 
             <section class="panel results-panel">
                 <div class="panel-header">
                     <p class="panel-kicker">Output</p>
                     <h2>Prediction results</h2>
                 </div>
-
+ 
                 <div id="status-message" class="status-message">Waiting for an image.</div>
                 <div id="results" class="results-list"></div>
             </section>
         </main>
-    </div>
 
+        <section id="overall-summary"></section>
+    </div>
+ 
     <script src="/static/app.js"></script>
 </body>
 </html>
