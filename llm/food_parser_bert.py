@@ -1,7 +1,11 @@
 import re
 import json
+import os
 import pandas as pd
 from pathlib import Path
+
+os.environ.setdefault("USE_TF", "0")
+
 from sentence_transformers import SentenceTransformer, util
 
 # ─────────────────────────────────────────────

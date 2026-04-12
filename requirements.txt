@@ -8,3 +8,5 @@ transformers
 ultralytics
 python-multipart
 openpyxl
+pillow
+sentence-transformers

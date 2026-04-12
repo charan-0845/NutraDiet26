@@ -1,31 +1,30 @@
 # =========================
 # IMPORTS
 # =========================
-from llm.food_parser_bert import parse_food
+from llm.merged_food_parser import merge_food_sources
 
 
 # =========================
 # MAIN FUNCTION (BERT BASED)
 # =========================
-def parse_food_items(text: str):
-    if not text or not text.strip():
+def parse_food_items(text: str = None, moondream_text: str = None):
+    if not text and not moondream_text:
         return []
 
-    results = parse_food(text)
+    results = merge_food_sources(
+        user_text=text,
+        moondream_text=moondream_text,
+        confidence_threshold=0.5,
+    )
 
-    parsed_items = []
-
-    for item in results:
-        # Optional: filter low confidence
-        if item.get("confidence", 1) < 0.5:
-            continue
-
-        parsed_items.append({
+    return [
+        {
             "name": item["name"],
-            "quantity_grams": item["quantity_grams"]
-        })
-
-    return parsed_items
+            "quantity_grams": item["quantity_grams"],
+            "source": item.get("source", "unknown"),
+        }
+        for item in results
+    ]
 
 
 # =========================
@@ -33,11 +32,13 @@ def parse_food_items(text: str):
 # =========================
 if __name__ == "__main__":
     while True:
-        user = input("Enter food: ")
-        if user.lower() in ["exit", "quit"]:
+        text = input("User text   (blank = none): ").strip() or None
+        moon = input("Moondream   (blank = none): ").strip() or None
+
+        if text in ["exit", "quit"] or moon in ["exit", "quit"]:
             break
 
-        output = parse_food_items(user)
+        output = parse_food_items(text=text, moondream_text=moon)
 
         print("\nParsed Output:")
         print(output)

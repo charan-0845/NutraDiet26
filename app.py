@@ -6,12 +6,12 @@ from fastapi.staticfiles import StaticFiles
 import cv2
 import numpy as np
 
-from modules.clip_infer import predict_food
+from modules.moondream_infer import query_moondream
 from modules.nutrition import get_nutrition
 from modules.preprocess import preprocess_image
 from modules.yolo_segment import segment_food
 
-# ✅ NEW: import parser
+# BERT-based parser — merges user text + moondream text internally
 from llm.parser import parse_food_items
 
 app = FastAPI()
@@ -29,6 +29,29 @@ async def root():
 async def health():
     return {"status": "ok"}
 
+
+def _build_results(food_items: list[dict], default_weight: float) -> list[dict]:
+    """Turn parsed food items into final result records with nutrition data."""
+    results = []
+    for item in food_items:
+        label = item["name"]
+        item_weight = (
+            item["quantity_grams"]
+            if item["quantity_grams"] is not None
+            else default_weight
+        )
+        nutrients = get_nutrition(label, item_weight)
+        results.append(
+            {
+                "food": label,
+                "weight": item_weight,
+                "nutrients": nutrients,
+                "source": item.get("source", "unknown"),
+            }
+        )
+    return results
+
+
 @app.post("/predict")
 async def predict(
     file: UploadFile = File(...),
@@ -37,7 +60,6 @@ async def predict(
     text: str = Form(None),
 ):
     try:
-        
         contents = await file.read()
         np_img = np.frombuffer(contents, np.uint8)
         image = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
@@ -46,107 +68,49 @@ async def predict(
             return {"results": [], "error": "Invalid image"}
 
         image = preprocess_image(image)
+        default_weight = weight if weight is not None else 100.0
 
-        # TEXT PARSING
-        text_items = []
-        if text:
-            try:
-                text_items = parse_food_items(text)
-            except Exception as e:
-                print("LLM ERROR:", e)
-                text_items = []
+        # ------------------------------------------------------------------
+        # IMAGE PIPELINE — always runs regardless of whether text is present
+        # ------------------------------------------------------------------
+        moondream_text = ""
 
-        results = []
-
-        # TEXT PRIORITY
-        if text_items:
-            for item in text_items:
-                label = item["name"]
-
-                item_weight = (
-                    item["quantity_grams"]
-                    if item["quantity_grams"] is not None
-                    else weight if weight is not None
-                    else 100
-                )
-
-                nutrients = get_nutrition(label, item_weight)
-
-                results.append(
-                    {
-                        "food": label,
-                        "confidence": 1.0,
-                        "weight": item_weight,
-                        "nutrients": nutrients,
-                        "source": "text",
-                    }
-                )
-
-            return {"results": results}
-
-        # IMAGE PIPELINE
         if mode == "single":
-            label, conf = predict_food(image)
-
-            item_weight = weight if weight is not None else 100
-
-            nutrients = get_nutrition(label, item_weight)
-
-            results.append(
-                {
-                    "food": label,
-                    "confidence": conf,
-                    "weight": item_weight,
-                    "nutrients": nutrients,
-                    "source": "image",
-                }
-            )
+            # Query the whole image once
+            moondream_text = query_moondream(image)
 
         elif mode == "mixed":
             crops, boxes, _labels, _confidences = segment_food(image)
 
             if not crops:
-                label, conf = predict_food(image)
-
-                item_weight = weight if weight is not None else 100
-
-                nutrients = get_nutrition(label, item_weight)
-
-                results.append(
-                    {
-                        "food": label,
-                        "confidence": conf,
-                        "weight": item_weight,
-                        "nutrients": nutrients,
-                        "source": "image",
-                    }
-                )
+                # No segments — fall back to whole-image query
+                moondream_text = query_moondream(image)
             else:
-                areas = [(x2 - x1) * (y2 - y1) for (x1, y1, x2, y2) in boxes]
-                total_area = sum(areas)
-
-                for i, _crop in enumerate(crops):
-                    label, conf = predict_food(crops[i])
-
-                    ratio = (areas[i] / total_area) if total_area else (1.0 / len(crops))
-                    item_weight = (weight if weight is not None else 100) * ratio
-
-                    nutrients = get_nutrition(label, item_weight)
-
-                    results.append(
-                        {
-                            "food": label,
-                            "confidence": conf,
-                            "weight": item_weight,
-                            "nutrients": nutrients,
-                            "source": "image",
-                        }
-                    )
+                # Query each YOLO crop and concatenate the outputs.
+                # The merged parser handles deduplication, so repeats are fine.
+                parts = []
+                for crop in crops:
+                    crop_text = query_moondream(crop)
+                    if crop_text:
+                        parts.append(crop_text)
+                moondream_text = " ".join(parts)
 
         else:
             return {"results": [], "error": "mode must be 'single' or 'mixed'"}
 
-        return {"results": results}
+        # ------------------------------------------------------------------
+        # MERGE — BERT parser combines user text + moondream output.
+        # Text portions take priority; moondream fills in what text missed.
+        # ------------------------------------------------------------------
+        food_items = parse_food_items(
+            text=text or None,
+            moondream_text=moondream_text or None,
+        )
+
+        if not food_items:
+            return {"results": [], "error": "Could not identify any food items."}
+
+        return {"results": _build_results(food_items, default_weight)}
 
     except Exception as e:
         print("SERVER ERROR:", e)
