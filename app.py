@@ -30,6 +30,16 @@ async def health():
     return {"status": "ok"}
 
 
+@app.post("/nutrition")
+async def nutrition_lookup(food: str = Form(...), weight: float = Form(...)):
+    """Re-fetch nutrition when the user edits a food name or weight."""
+    try:
+        nutrients = get_nutrition(food, weight)
+        return {"food": food, "weight": weight, "nutrients": nutrients}
+    except Exception as e:
+        return {"error": str(e)}
+
+
 def _build_results(food_items: list[dict], default_weight: float) -> list[dict]:
     """Turn parsed food items into final result records with nutrition data."""
     results = []

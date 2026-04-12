@@ -3,35 +3,24 @@ merged_food_parser.py
 ─────────────────────────────────────────────────────────────────
 Merges structured food info from TWO sources:
   1. User text input   (e.g. "dal makhani with extra butter")
-  2. Moondream output  (e.g. "I had 2 pieces of dosa.")
-
+  2. Moondream output  (e.g. "1 small bowl of chutney, 300g of rice, 1 cup of curry")
+ 
 Rules:
   • Text input has PRIORITY for portion sizes.
   • Moondream portions are used ONLY when the food is not mentioned in text.
   • Duplicate food items are removed (matched by canonical label name).
   • Low-confidence matches (< 0.5) are dropped.
-
-Usage:
-    from merged_food_parser import merge_food_sources
-
-    items = merge_food_sources(
-        user_text="dal makhani and naan",
-        moondream_text="I can see 2 pieces of naan and a bowl of dal makhani and some rice."
-    )
-─────────────────────────────────────────────────────────────────
 """
-
+ 
 import re
 import json
 from typing import Optional
 from llm.food_parser_bert import parse_food   # your existing BERT parser
-
+ 
 # ─────────────────────────────────────────────────────────────────
 # MOONDREAM TEXT CLEANUP
-# Strip conversational filler before feeding into the BERT parser
-# e.g. "I can see ...", "There appears to be ...", "It looks like ..."
 # ─────────────────────────────────────────────────────────────────
-
+ 
 _MOONDREAM_FILLER = re.compile(
     r"^(i (can see|see|had|notice|observe|think i see)|"
     r"there (is|are|appears? to be)|"
@@ -41,44 +30,118 @@ _MOONDREAM_FILLER = re.compile(
     r"in (the|this) (image|photo|picture)[,.]?\s*)",
     re.IGNORECASE,
 )
-
+ 
 _SENTENCE_SPLIT = re.compile(r"[.!?]+")
-
-
+ 
+# "Xg/ml/kg of Y"  →  "Xg Y"  (keep numeric unit, drop "of")
+_GRAMS_OF = re.compile(
+    r"(\d+(?:\.\d+)?)\s*(g|grams?|kg|ml)\s+of\s+",
+    re.IGNORECASE,
+)
+ 
+# "N [size] unit(s) of X"  →  "N unit X"
+_NUM_UNIT_OF = re.compile(
+    r"\b(\d+(?:\.\d+)?)\s+"
+    r"(?:small\s+|large\s+|medium\s+)?"
+    r"(bowls?|plates?|cups?|pieces?|glasses?|servings?|tablespoons?|teaspoons?)"
+    r"\s+of\s+",
+    re.IGNORECASE,
+)
+ 
+# "a/an [size] unit of X"  →  "1 unit X"
+_ART_UNIT_OF = re.compile(
+    r"\ban?\s+(?:small\s+|large\s+|medium\s+)?"
+    r"(bowl|plate|cup|piece|glass|serving|tablespoon|teaspoon)"
+    r"\s+of\s+",
+    re.IGNORECASE,
+)
+ 
+_SOME         = re.compile(r"\bsome\s+", re.IGNORECASE)
+_BARE_ARTICLE = re.compile(r"\ban?\s+",  re.IGNORECASE)
+_STRAY_OF     = re.compile(r"\bof\s+",   re.IGNORECASE)
+_SIZE_WORDS   = re.compile(r"\b(small|large|medium|big|little|tiny|huge)\b", re.IGNORECASE)
+ 
+ 
+def _normalise_chunk(chunk: str) -> str:
+    """
+    Normalise a single food chunk (no commas) so extract_quantity() can parse it.
+ 
+    Examples
+    --------
+    "1 small bowl of chutney"  →  "1 bowl chutney"
+    "300g of rice"             →  "300g rice"
+    "1 cup of curry"           →  "1 cup curry"
+    "2 pieces of naan"         →  "2 piece naan"
+    "a bowl of dal"            →  "1 bowl dal"
+    "some rice"                →  "rice"
+    """
+    # "Xg of Y" → "Xg Y"
+    chunk = _GRAMS_OF.sub(lambda m: f"{m.group(1)}{m.group(2)} ", chunk)
+ 
+    # "N unit(s) of X" → "N unit X"
+    chunk = _NUM_UNIT_OF.sub(
+        lambda m: f"{m.group(1)} {m.group(2).rstrip('sS')} ", chunk
+    )
+ 
+    # "a/an unit of X" → "1 unit X"
+    chunk = _ART_UNIT_OF.sub(
+        lambda m: f"1 {m.group(1).lower()} ", chunk
+    )
+ 
+    chunk = _SOME.sub("", chunk)
+    chunk = _BARE_ARTICLE.sub("", chunk)
+    chunk = _STRAY_OF.sub("", chunk)
+    chunk = _SIZE_WORDS.sub("", chunk)
+ 
+    return chunk.strip()
+ 
+ 
 def _clean_moondream(text: str) -> str:
     """
-    Strip conversational filler from each sentence in Moondream output
-    and return a plain food-description string the BERT parser can handle.
+    Convert raw Moondream output into a clean comma-joined string
+    that parse_food() can handle.
+ 
+    Key fix: split on commas FIRST (per-chunk), then normalise each
+    chunk independently.  Previously the whole sentence was normalised
+    as one string, so "1 small bowl of chutney, 300g of rice, 1 cup of
+    curry" was treated as a single food item.
     """
     sentences = [s.strip() for s in _SENTENCE_SPLIT.split(text) if s.strip()]
-    cleaned = []
+    cleaned_chunks = []
+ 
     for sent in sentences:
+        # Strip leading conversational filler
         sent = _MOONDREAM_FILLER.sub("", sent).strip(" ,.")
-        if sent:
-            cleaned.append(sent)
-    return ", ".join(cleaned)
-
-
+        if not sent:
+            continue
+ 
+        # ── CORE FIX ─────────────────────────────────────────────
+        # Split on commas so each food item is handled on its own,
+        # then normalise each chunk independently.
+        # ─────────────────────────────────────────────────────────
+        for chunk in sent.split(","):
+            chunk = chunk.strip()
+            if not chunk:
+                continue
+            normalised = _normalise_chunk(chunk).strip(" ,.")
+            if normalised:
+                cleaned_chunks.append(normalised)
+ 
+    return ", ".join(cleaned_chunks)
+ 
+ 
 # ─────────────────────────────────────────────────────────────────
 # DEDUPLICATION HELPER
-# Two items are "the same" if their canonical names match exactly.
-# (The BERT parser already canonicalises via MAPPING_DICT, so a
-#  simple string equality check is sufficient here.)
 # ─────────────────────────────────────────────────────────────────
-
+ 
 def _same_food(name_a: str, name_b: str) -> bool:
-    """
-    Return True if two canonical food names refer to the same item.
-    Exact match on the canonical label is enough because the BERT
-    parser + mapping dict has already normalised both strings.
-    """
     return name_a.strip().lower() == name_b.strip().lower()
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────
 # CORE MERGE LOGIC
 # ─────────────────────────────────────────────────────────────────
-
+ 
 def merge_food_sources(
     user_text: Optional[str] = None,
     moondream_text: Optional[str] = None,
@@ -86,25 +149,18 @@ def merge_food_sources(
 ) -> list[dict]:
     """
     Parse user text and/or Moondream output, then merge them.
-
+ 
     Parameters
     ----------
     user_text : str | None
-        Free-text food description typed by the user.
     moondream_text : str | None
-        Natural-language output from Moondream (or any VLM).
-    confidence_threshold : float
-        Items with BERT confidence below this are discarded.
-
+    confidence_threshold : float  – items below this BERT score are dropped
+ 
     Returns
     -------
-    list of dicts, each with keys:
-        name            – canonical food label
-        quantity_grams  – estimated weight in grams
-        source          – "text", "image", or "text+image"
-        confidence      – BERT match score
+    list of dicts: name, quantity_grams, source, confidence
     """
-
+ 
     # ── 1. Parse text items ───────────────────────────────────────
     text_items: list[dict] = []
     if user_text and user_text.strip():
@@ -114,7 +170,7 @@ def merge_food_sources(
             for item in raw
             if item.get("confidence", 1.0) >= confidence_threshold
         ]
-
+ 
     # ── 2. Parse Moondream items ──────────────────────────────────
     image_items: list[dict] = []
     if moondream_text and moondream_text.strip():
@@ -125,120 +181,90 @@ def merge_food_sources(
             for item in raw
             if item.get("confidence", 1.0) >= confidence_threshold
         ]
-
+ 
     # ── 3. Merge: text has priority ───────────────────────────────
-    #
-    # Strategy:
-    #   • Start with all text items (they always make it in).
-    #   • For each image item:
-    #       - If already present in text → skip (text portion wins).
-    #         But if text item has no portion (None), borrow from image.
-    #       - If NOT present → add it with image portion.
-    #
-
-    merged: list[dict] = list(text_items)   # copy so we can mutate
-
-    # Build a quick lookup: canonical name → index in `merged`
+    merged: list[dict] = list(text_items)
     name_index: dict[str, int] = {
         item["name"]: idx for idx, item in enumerate(merged)
     }
-
+ 
     for img_item in image_items:
         img_name = img_item["name"]
-
         if img_name in name_index:
-            # Duplicate found — text item already exists
             idx = name_index[img_name]
             existing = merged[idx]
-
-            # Borrow portion from image ONLY if text gave us nothing
             if existing.get("quantity_grams") is None and img_item.get("quantity_grams") is not None:
                 merged[idx] = {
                     **existing,
                     "quantity_grams": img_item["quantity_grams"],
-                    "source": "text+image",   # portion came from image
+                    "source": "text+image",
                 }
-            # else: keep text portion as-is
-
         else:
-            # New food only seen by Moondream → add it
             merged.append(img_item)
             name_index[img_name] = len(merged) - 1
-
+ 
     # ── 4. Final clean-up ─────────────────────────────────────────
-    output = []
-    for item in merged:
-        output.append({
+    return [
+        {
             "name":           item["name"],
             "quantity_grams": item.get("quantity_grams"),
             "source":         item.get("source", "unknown"),
             "confidence":     round(item.get("confidence", 0.0), 3),
-        })
-
-    return output
-
-
+        }
+        for item in merged
+    ]
+ 
+ 
 # ─────────────────────────────────────────────────────────────────
-# CONVENIENCE WRAPPER  (mirrors your existing parse_food_items API)
+# CONVENIENCE WRAPPER
 # ─────────────────────────────────────────────────────────────────
-
+ 
 def parse_food_items_merged(
     user_text: Optional[str] = None,
     moondream_text: Optional[str] = None,
 ) -> list[dict]:
-    """
-    Drop-in replacement for your existing parse_food_items() that also
-    accepts a moondream_text argument.
-
-    Returns only {name, quantity_grams} like the original, but also
-    includes 'source' for debugging.
-    """
     results = merge_food_sources(user_text=user_text, moondream_text=moondream_text)
     return [
-        {
-            "name":           r["name"],
-            "quantity_grams": r["quantity_grams"],
-            "source":         r["source"],
-        }
+        {"name": r["name"], "quantity_grams": r["quantity_grams"], "source": r["source"]}
         for r in results
     ]
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────
 # CLI — quick manual testing
 # ─────────────────────────────────────────────────────────────────
-
+ 
 if __name__ == "__main__":
     print("\n🍛  MERGED FOOD PARSER  (text + Moondream)\n")
-
+ 
     EXAMPLES = [
         {
-            "label":    "Text mentions naan, image adds rice",
-            "text":     "dal makhani and naan",
-            "moondream":"I had 2 pieces of naan and a bowl of dal makhani and some rice.",
-        },
-        {
-            "label":    "Text has portions, image has different portions → text wins",
-            "text":     "1 cup dosa",
-            "moondream":"I had 2 pieces of dosa.",
-        },
-        {
-            "label":    "Text mentions food but no portion → image portion used",
-            "text":     "idli and sambar",
-            "moondream":"I can see 3 idlis and a bowl of sambar.",
-        },
-        {
-            "label":    "Only Moondream, no text",
+            "label":    "Moondream comma list — the reported bug",
             "text":     None,
-            "moondream":"There appears to be a plate of biryani and some raita.",
+            "moondream":"1 small bowl of chutney, 300g of rice, 1 cup of curry",
         },
         {
-            "label":    "Only text, no Moondream",
+            "label":    "Mixed: text + Moondream comma list",
+            "text":     "dal makhani and naan",
+            "moondream":"1 cup of dal makhani, 2 pieces of naan, 300g of rice",
+        },
+        {
+            "label":    "Text no portion → image portion used",
+            "text":     "idli and sambar",
+            "moondream":"3 pieces of idli, 1 bowl of sambar",
+        },
+        {
+            "label":    "Filler sentence + comma list",
+            "text":     None,
+            "moondream":"I can see a plate of biryani, some raita, and 2 pieces of naan.",
+        },
+        {
+            "label":    "Only text",
             "text":     "two chapati and dal",
             "moondream":None,
         },
     ]
-
+ 
     for ex in EXAMPLES:
         print(f"{'─'*60}")
         print(f"🔖  {ex['label']}")
@@ -246,25 +272,23 @@ if __name__ == "__main__":
             print(f"   Text input : {ex['text']}")
         if ex["moondream"]:
             print(f"   Moondream  : {ex['moondream']}")
-        result = parse_food_items_merged(
-            user_text=ex["text"],
-            moondream_text=ex["moondream"],
-        )
+            print(f"   Cleaned    : {_clean_moondream(ex['moondream'])}")
+        result = parse_food_items_merged(user_text=ex["text"], moondream_text=ex["moondream"])
         print("\n   Merged output:")
         print(json.dumps(result, indent=4))
         print()
-
-    # Interactive mode
+ 
     print(f"{'─'*60}")
     print("🎤  Interactive mode  (type 'exit' to quit)\n")
     while True:
         u = input("User text   (blank = none): ").strip() or None
         m = input("Moondream   (blank = none): ").strip() or None
-        if u and u.lower() in ("exit", "quit"):
+        if (u and u.lower() in ("exit", "quit")) or (m and m.lower() in ("exit", "quit")):
             break
-        if m and m.lower() in ("exit", "quit"):
-            break
+        if m:
+            print(f"   Cleaned moondream: {_clean_moondream(m)}")
         out = parse_food_items_merged(user_text=u, moondream_text=m)
         print("\nMerged Output:")
         print(json.dumps(out, indent=2))
         print()
+ 
