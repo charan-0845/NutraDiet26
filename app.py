@@ -9,7 +9,6 @@ import numpy as np
 from modules.moondream_infer import query_moondream
 from modules.nutrition import get_nutrition
 from modules.preprocess import preprocess_image
-from modules.yolo_segment import segment_food
 
 # BERT-based parser — merges user text + moondream text internally
 from llm.parser import parse_food_items
@@ -65,7 +64,6 @@ def _build_results(food_items: list[dict], default_weight: float) -> list[dict]:
 @app.post("/predict")
 async def predict(
     file: UploadFile = File(...),
-    mode: str = Form(...),
     weight: float = Form(None),
     text: str = Form(None),
 ):
@@ -80,33 +78,9 @@ async def predict(
         image = preprocess_image(image)
         default_weight = weight if weight is not None else 100.0
 
-        # ------------------------------------------------------------------
-        # IMAGE PIPELINE — always runs regardless of whether text is present
-        # ------------------------------------------------------------------
-        moondream_text = ""
-
-        if mode == "single":
-            # Query the whole image once
-            moondream_text = query_moondream(image)
-
-        elif mode == "mixed":
-            crops, boxes, _labels, _confidences = segment_food(image)
-
-            if not crops:
-                # No segments — fall back to whole-image query
-                moondream_text = query_moondream(image)
-            else:
-                # Query each YOLO crop and concatenate the outputs.
-                # The merged parser handles deduplication, so repeats are fine.
-                parts = []
-                for crop in crops:
-                    crop_text = query_moondream(crop)
-                    if crop_text:
-                        parts.append(crop_text)
-                moondream_text = " ".join(parts)
-
-        else:
-            return {"results": [], "error": "mode must be 'single' or 'mixed'"}
+        # Query the whole image once. Food separation is handled by Moondream's
+        # description and the downstream parser.
+        moondream_text = query_moondream(image)
 
         # ------------------------------------------------------------------
         # MERGE — BERT parser combines user text + moondream output.

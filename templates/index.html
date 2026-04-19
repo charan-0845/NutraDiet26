@@ -79,16 +79,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:28px 0
 .pe{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:.82rem;text-align:center}
 .pe svg{opacity:.2}
 
-/* mode */
 .flbl{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:7px;display:block}
-.modes{display:flex;gap:10px}
-.mopt{flex:1;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--rsm);border:1px solid var(--border);background:var(--glass);cursor:pointer;transition:all .2s;font-size:.88rem;font-weight:600}
-.mopt input{display:none}
-.mopt:hover{border-color:rgba(185,255,75,.3);background:var(--lime-dim)}
-.mopt.sel{border-color:rgba(185,255,75,.35);background:var(--lime-dim)}
-.rdot{width:15px;height:15px;border-radius:50%;border:2px solid var(--muted);transition:all .2s;flex-shrink:0;position:relative}
-.mopt.sel .rdot{border-color:var(--lime);background:var(--lime);box-shadow:0 0 12px rgba(185,255,75,.45)}
-.mopt.sel .rdot::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--bg)}
 .ftxt{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);color:var(--text);font:inherit;font-size:.88rem;padding:13px 15px;resize:vertical;flex:1;transition:border .2s,box-shadow .2s;outline:none;min-height:140px}
 .ftxt:focus{border-color:rgba(185,255,75,.4);box-shadow:0 0 0 3px rgba(185,255,75,.07)}
 .fhint{font-size:.73rem;color:var(--muted);line-height:1.5;margin-top:5px}
@@ -257,19 +248,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:28px 0
           </div>
         </div>
         <div class="form-right">
-          <div>
-            <span class="flbl">Analysis Mode</span>
-            <div class="modes" id="mg">
-              <label class="mopt sel" data-v="single">
-                <input type="radio" name="mode" value="single" checked>
-                <span class="rdot"></span><span>Single Food</span>
-              </label>
-              <label class="mopt" data-v="mixed">
-                <input type="radio" name="mode" value="mixed">
-                <span class="rdot"></span><span>Mixed Meal</span>
-              </label>
-            </div>
-          </div>
           <div style="display:flex;flex-direction:column;flex:1;gap:5px">
             <span class="flbl">Meal Description · optional</span>
             <textarea class="ftxt" name="text" rows="7" placeholder="e.g. 2 idlis and 150g sambar, or 1 plate biryani around 300 grams&#10;&#10;Include portion size or weight directly in your description."></textarea>
@@ -310,13 +288,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:28px 0
   }
   window.addEventListener('resize',resize);resize();
 })();
-
-/* RADIO */
-document.getElementById('mg').addEventListener('click',e=>{
-  const o=e.target.closest('.mopt');if(!o)return;
-  document.querySelectorAll('.mopt').forEach(x=>x.classList.remove('sel'));
-  o.classList.add('sel');o.querySelector('input').checked=true;
-});
 
 /* DRAG DROP */
 const dz=document.getElementById('dz');
@@ -468,11 +439,26 @@ function attachEvents(){
   }));
 
   /* SAVE */
-  document.querySelectorAll('.sb2').forEach(btn=>btn.addEventListener('click',function(){
+  document.querySelectorAll('.sb2').forEach(btn=>btn.addEventListener('click',async function(){
     const i=this.dataset.i;
     const nm=document.getElementById('nm-'+i);
     const eh=document.getElementById('eh-'+i);
+    const newName=nm.textContent.trim();
+    if(!newName){
+      showStatus('Food name cannot be empty.','err');
+      return;
+    }
     nm.contentEditable='false';
+    this.disabled=true;
+    this.textContent='...';
+    const updated=await refetchNutritionForCard(i,newName);
+    this.disabled=false;
+    this.textContent='✓';
+    if(!updated){
+      nm.contentEditable='true';
+      nm.focus();
+      return;
+    }
     this.style.display='none';eh.style.display='none';
     document.querySelector(`.eb[data-i="${i}"]`).style.display='flex';
   }));
@@ -509,6 +495,62 @@ function attachEvents(){
     calEl.style.color='var(--lime)';setTimeout(()=>calEl.style.color='',700);
     rebuildTotals();
   }));
+}
+
+async function refetchNutritionForCard(i,foodName){
+  const card=document.querySelector(`.nc[data-idx="${i}"]`);
+  if(!card)return false;
+  const weight=parseFloat(document.getElementById('wt-'+i).value)||100;
+  card.style.opacity='.65';
+  try{
+    const fd=new FormData();
+    fd.append('food',foodName);
+    fd.append('weight',String(weight));
+    const res=await fetch('/nutrition',{method:'POST',body:fd});
+    const data=await res.json();
+    if(!res.ok||data.error)throw new Error(data.error||'Nutrition lookup failed');
+    updateCardNutrition(i,data.nutrients||{},weight);
+    showStatus(`Updated nutrition for ${foodName}.`,'ok');
+    return true;
+  }catch(err){
+    showStatus(err.message,'err');
+    return false;
+  }finally{
+    card.style.opacity='';
+  }
+}
+
+function updateCardNutrition(i,n,weight){
+  const card=document.querySelector(`.nc[data-idx="${i}"]`);
+  if(!card)return;
+  const cal=n.calories,pro=n.protein,carb=n.carbs,fat=n.fat;
+  const proVal=Number(pro)||0,carbVal=Number(carb)||0,fatVal=Number(fat)||0;
+  card.dataset.baseW=weight;
+  card.dataset.cal=cal??0;
+  card.dataset.pro=pro??0;
+  card.dataset.carb=carb??0;
+  card.dataset.fat=fat??0;
+  document.getElementById('cal-'+i).textContent=f1(cal);
+  document.getElementById('pro-'+i).textContent=f1(pro)+' g';
+  document.getElementById('crb-'+i).textContent=f1(carb)+' g';
+  document.getElementById('fat-'+i).textContent=f1(fat)+' g';
+  let matched=card.querySelector('.nc-matched');
+  if(!matched){
+    matched=document.createElement('div');
+    matched.className='nc-matched';
+    card.querySelector('.nc-nw')?.appendChild(matched);
+  }
+  matched.textContent='Matched: '+(n.matched_name||'Not found');
+  const stxt=card.querySelector('.stxt');
+  if(stxt)stxt.textContent='DB: '+(n.source||'—');
+  const dot=card.querySelector('.sdot');
+  if(dot)dot.style.background=n.source==='INDB'?'var(--lime)':'var(--amber)';
+  const fills=card.querySelectorAll('.fill');
+  const mx=Math.max(proVal,carbVal,fatVal,1);
+  if(fills[0])fills[0].style.width=Math.min(100,proVal/mx*100)+'%';
+  if(fills[1])fills[1].style.width=Math.min(100,carbVal/mx*100)+'%';
+  if(fills[2])fills[2].style.width=Math.min(100,fatVal/mx*100)+'%';
+  rebuildTotals();
 }
 
 function rebuildTotals(){
