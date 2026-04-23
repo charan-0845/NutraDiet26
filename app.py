@@ -55,7 +55,7 @@ def _build_results(food_items: list[dict], default_weight: float) -> list[dict]:
                 "food": label,
                 "weight": item_weight,
                 "nutrients": nutrients,
-                "source": item.get("source", "unknown"),
+                "source": nutrients.get("source", "unknown"),
             }
         )
     return results

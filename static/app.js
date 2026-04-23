@@ -154,9 +154,77 @@ function renderAll() {
     attachCardListeners();
 }
 
+function getNutrientUnit(key) {
+    const unitMap = {
+        'energy_kcal': 'kcal', 'protein': 'g', 'carbs': 'g', 'fat': 'g',
+        'saturated_fat': 'g', 'monounsaturated_fat': 'g', 'polyunsaturated_fat': 'g',
+        'fiber': 'g', 'sugars': 'g', 'cholesterol': 'mg',
+        'calcium': 'mg', 'phosphorus': 'mg', 'magnesium': 'mg', 'sodium': 'mg', 'potassium': 'mg',
+        'iron': 'mg', 'copper': 'mg', 'selenium': 'mcg', 'zinc': 'mg',
+        'vitamin_a': 'mcg', 'vitamin_c': 'mg', 'vitamin_e': 'mg',
+        'thiamin': 'mg', 'riboflavin': 'mg', 'niacin': 'mg', 'vitamin_b6': 'mg', 'folate': 'mcg'
+    };
+    return unitMap[key] || '';
+}
+
+function getNutrientName(key) {
+    const nameMap = {
+        'energy_kcal': 'Energy', 'protein': 'Protein', 'carbs': 'Carbohydrates', 'fat': 'Total Fat',
+        'saturated_fat': 'Saturated Fat', 'monounsaturated_fat': 'Monounsaturated Fat', 'polyunsaturated_fat': 'Polyunsaturated Fat',
+        'fiber': 'Fiber', 'sugars': 'Sugars', 'cholesterol': 'Cholesterol',
+        'calcium': 'Calcium', 'phosphorus': 'Phosphorus', 'magnesium': 'Magnesium', 'sodium': 'Sodium', 'potassium': 'Potassium',
+        'iron': 'Iron', 'copper': 'Copper', 'selenium': 'Selenium', 'zinc': 'Zinc',
+        'vitamin_a': 'Vitamin A', 'vitamin_c': 'Vitamin C', 'vitamin_e': 'Vitamin E',
+        'thiamin': 'Thiamine (B1)', 'riboflavin': 'Riboflavin (B2)', 'niacin': 'Niacin (B3)', 'vitamin_b6': 'Vitamin B6', 'folate': 'Folate'
+    };
+    return nameMap[key] || key;
+}
+
+function createNutrientRows(nutrients) {
+    // Key nutrients to show always
+    const keyNutrients = ['energy_kcal', 'protein', 'carbs', 'fat', 'fiber'];
+    
+    // All possible nutrients
+    const allNutrients = [
+        'energy_kcal', 'protein', 'carbs', 'fat', 'saturated_fat', 'monounsaturated_fat', 'polyunsaturated_fat',
+        'fiber', 'sugars', 'cholesterol',
+        'calcium', 'phosphorus', 'magnesium', 'sodium', 'potassium',
+        'iron', 'copper', 'selenium', 'zinc',
+        'vitamin_a', 'vitamin_c', 'vitamin_e', 'thiamin', 'riboflavin', 'niacin', 'vitamin_b6', 'folate'
+    ];
+    
+    // Build key nutrients display
+    let keyHtml = '';
+    for (const key of keyNutrients) {
+        const value = nutrients[key];
+        if (value !== null && value !== undefined) {
+            const unit = getNutrientUnit(key);
+            const name = getNutrientName(key);
+            keyHtml += `<div class="metric"><span class="metric-label">${name}</span><span class="metric-value">${fmt(value)} ${unit}</span></div>`;
+        }
+    }
+    
+    // Build additional nutrients display (for expandable section)
+    let extraHtml = '';
+    for (const key of allNutrients) {
+        if (!keyNutrients.includes(key)) {
+            const value = nutrients[key];
+            if (value !== null && value !== undefined) {
+                const unit = getNutrientUnit(key);
+                const name = getNutrientName(key);
+                extraHtml += `<div class="metric"><span class="metric-label">${name}</span><span class="metric-value">${fmt(value)} ${unit}</span></div>`;
+            }
+        }
+    }
+    
+    return { keyHtml, extraHtml };
+}
+
 function createResultCard(item) {
     const nutrients = item.nutrients || {};
     const id = item._id;
+    const { keyHtml, extraHtml } = createNutrientRows(nutrients);
+    const hasExtra = extraHtml.length > 0;
 
     return `
 <article class="result-card" data-id="${id}">
@@ -200,23 +268,20 @@ function createResultCard(item) {
     </div>
 
     <div class="nutrients" id="nutrients-${id}">
-        <div class="metric">
-            <span class="metric-label">Calories</span>
-            <span class="metric-value" id="cal-${id}">${fmt(nutrients.calories)} kcal</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Protein</span>
-            <span class="metric-value" id="pro-${id}">${fmt(nutrients.protein)} g</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Carbs</span>
-            <span class="metric-value" id="carb-${id}">${fmt(nutrients.carbs)} g</span>
-        </div>
-        <div class="metric">
-            <span class="metric-label">Fat</span>
-            <span class="metric-value" id="fat-${id}">${fmt(nutrients.fat)} g</span>
-        </div>
+        ${keyHtml}
     </div>
+    
+    ${hasExtra ? `
+    <div class="nutrients-toggle-wrap">
+        <button class="nutrients-toggle" data-id="${id}" type="button">
+            Show All Nutrients (27 Total)
+        </button>
+    </div>
+    <div class="nutrients-extra" id="nutrients-extra-${id}" style="display:none;">
+        <div class="nutrients-divider">Additional Nutrients</div>
+        ${extraHtml}
+    </div>
+    ` : ''}
 </article>`;
 }
 
@@ -387,6 +452,17 @@ function attachCardListeners() {
             }
         });
     });
+
+    // Toggle for expanded nutrients
+    document.querySelectorAll(".nutrients-toggle").forEach((button) => {
+        button.addEventListener("click", () => {
+            const id = button.dataset.id;
+            const extraDiv = document.getElementById(`nutrients-extra-${id}`);
+            const isHidden = extraDiv.style.display === 'none';
+            extraDiv.style.display = isHidden ? 'block' : 'none';
+            button.textContent = isHidden ? 'Hide Additional Nutrients' : 'Show All Nutrients (27 Total)';
+        });
+    });
 }
 
 function applyWeightChange(id, newWeight) {
@@ -445,13 +521,15 @@ async function applyFoodNameChange(id, newName) {
 }
 
 function patchNutrientCells(id, nutrients) {
-    const calories = document.getElementById(`cal-${id}`);
-    const protein = document.getElementById(`pro-${id}`);
-    const carbs = document.getElementById(`carb-${id}`);
-    const fat = document.getElementById(`fat-${id}`);
-
-    if (calories) calories.textContent = `${fmt(nutrients.calories)} kcal`;
-    if (protein) protein.textContent = `${fmt(nutrients.protein)} g`;
-    if (carbs) carbs.textContent = `${fmt(nutrients.carbs)} g`;
-    if (fat) fat.textContent = `${fmt(nutrients.fat)} g`;
+    const nutrientsDiv = document.getElementById(`nutrients-${id}`);
+    if (nutrientsDiv) {
+        const { keyHtml, extraHtml } = createNutrientRows(nutrients);
+        nutrientsDiv.innerHTML = keyHtml;
+        
+        // Update extra nutrients if they exist
+        const extraDiv = document.getElementById(`nutrients-extra-${id}`);
+        if (extraDiv && extraHtml) {
+            extraDiv.innerHTML = `<div class="nutrients-divider">Additional Nutrients</div>${extraHtml}`;
+        }
+    }
 }

@@ -145,7 +145,7 @@ def _same_food(name_a: str, name_b: str) -> bool:
 def merge_food_sources(
     user_text: Optional[str] = None,
     moondream_text: Optional[str] = None,
-    confidence_threshold: float = 0.5,
+    confidence_threshold: float = 0.6,
 ) -> list[dict]:
     """
     Parse user text and/or Moondream output, then merge them.
@@ -183,11 +183,24 @@ def merge_food_sources(
         ]
  
     # ── 3. Merge: text has priority ───────────────────────────────
-    merged: list[dict] = list(text_items)
+    # Deduplicate within text_items first (keep highest confidence)
+    seen: dict[str, int] = {}
+    deduped_text: list[dict] = []
+    for item in text_items:
+        name = item["name"]
+        if name in seen:
+            existing_idx = seen[name]
+            if item.get("confidence", 0) > deduped_text[existing_idx].get("confidence", 0):
+                deduped_text[existing_idx] = item
+        else:
+            seen[name] = len(deduped_text)
+            deduped_text.append(item)
+
+    merged: list[dict] = deduped_text
     name_index: dict[str, int] = {
         item["name"]: idx for idx, item in enumerate(merged)
     }
- 
+
     for img_item in image_items:
         img_name = img_item["name"]
         if img_name in name_index:
@@ -200,9 +213,10 @@ def merge_food_sources(
                     "source": "text+image",
                 }
         else:
+            # Deduplicate within image_items as they are added
             merged.append(img_item)
             name_index[img_name] = len(merged) - 1
- 
+    
     # ── 4. Final clean-up ─────────────────────────────────────────
     return [
         {

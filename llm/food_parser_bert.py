@@ -119,16 +119,7 @@ def normalize_quantity(quantity, unit):
 # ─────────────────────────────────────────────
  
 def fix_quantities(items):
-    items_with_qty = [i for i in items if i["quantity_grams"] is not None]
- 
-    if len(items) > 1 and len(items_with_qty) == 1:
-        qty = items_with_qty[0]["quantity_grams"]
- 
-        for item in items:
-            item["quantity_grams"] = None
- 
-        items[-1]["quantity_grams"] = qty
- 
+    # Do nothing — don't redistribute quantities across unrelated items
     return items
  
 # ─────────────────────────────────────────────
@@ -166,27 +157,24 @@ def extract_quantity(text):
 # COUNT-BASED FOODS
 # ─────────────────────────────────────────────
  
-COUNT_FOODS = {"chapati", "roti", "idli", "egg"}
- 
+COUNT_FOODS = {"chapati", "roti", "idli", "egg", "eggs", "naan", "paratha", "poori"}
+
 def detect_count(text):
     match = re.search(r"(\d+(?:\.\d+)?)\s+([a-zA-Z]+)", text)
     if match:
         qty = float(match.group(1))
-        food = match.group(2).lower()
- 
-        # normalize plural → singular
-        if food.endswith("s"):
-            food = food[:-1]
- 
+        food = match.group(2).lower().rstrip("s")  # naive deplural
+        # Only treat as a count if the food word is a known countable item
+        if food not in COUNT_FOODS:
+            return None, None, text
         return qty, "piece", food
- 
     return None, None, text
  
 # ─────────────────────────────────────────────
 # BERT MATCH
 # ─────────────────────────────────────────────
  
-def match_label(text, threshold=0.6):
+def match_label(text, threshold=0.5):
     model, label_embeddings = _get_bert_model()
     emb = model.encode(text, convert_to_tensor=True)
     scores = util.cos_sim(emb, label_embeddings)[0]
@@ -195,6 +183,7 @@ def match_label(text, threshold=0.6):
     score = float(scores[idx])
  
     if score < threshold:
+        print(f"[BERT] Low confidence ({score:.2f}) for '{text}' — passing raw text to nutrition DB")
         return text, score
  
     return FOOD_LABELS[idx], score

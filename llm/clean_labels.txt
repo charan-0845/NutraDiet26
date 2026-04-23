@@ -435,3 +435,18 @@ whole masoor (masoor ki dal)
 whole moth (moth ki dal)
 woodapple juice (bel ka sharbat)
 yam fried (zimikand/suran fried)
+apple
+banana
+bread (white)
+bread (brown/whole wheat)
+butter
+cheese (cheddar)
+chicken biryani
+egg (raw/plain)
+milk (whole)
+milk (skimmed)
+orange
+rice (plain cooked)
+sugar
+water
+yogurt (plain)

@@ -174,6 +174,12 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:28px 0
 .fc{background:linear-gradient(90deg,var(--lime),#7de000)}
 .ff{background:linear-gradient(90deg,var(--amber),#ff7a3b)}
 
+/* nutrients toggle */
+.nut-toggle{padding:10px 18px;border-top:1px solid var(--border);text-align:center}
+.nut-btn{background:none;border:1px solid rgba(185,255,75,.2);color:var(--lime);padding:8px 12px;border-radius:6px;font-size:.68rem;font-weight:700;cursor:pointer;transition:all .2s}
+.nut-btn:hover{background:var(--lime-dim);border-color:rgba(185,255,75,.4)}
+.nut-extra{border-top:1px solid var(--border)}
+
 /* card footer */
 .nc-foot{padding:8px 18px 12px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border)}
 .sdot{width:5px;height:5px;border-radius:50%}
@@ -369,9 +375,39 @@ function buildCard(item,i){
   const srcBadge=item.source==='text'?'sb-a':item.source==='text+image'?'sb-s':'sb-l';
   const srcLbl=item.source==='text'?'Text':item.source==='text+image'?'Mixed':'Image';
   const conf=item.confidence!=null?Math.round(item.confidence*100):null;
+  
+  // Build additional nutrients section
+  const nutrientNames={
+    fiber:'Fiber',sugars:'Sugars',cholesterol:'Cholesterol',
+    saturated_fat:'Saturated Fat',monounsaturated_fat:'Monounsaturated Fat',polyunsaturated_fat:'Polyunsaturated Fat',
+    calcium:'Calcium',phosphorus:'Phosphorus',magnesium:'Magnesium',
+    sodium:'Sodium',potassium:'Potassium',iron:'Iron',copper:'Copper',selenium:'Selenium',zinc:'Zinc',
+    vitamin_a:'Vitamin A',vitamin_c:'Vitamin C',vitamin_e:'Vitamin E',
+    thiamin:'Thiamin (B1)',riboflavin:'Riboflavin (B2)',niacin:'Niacin (B3)',vitamin_b6:'Vitamin B6',folate:'Folate'
+  };
+  const nutrientUnits={
+    fiber:'g',sugars:'g',cholesterol:'mg',
+    saturated_fat:'g',monounsaturated_fat:'g',polyunsaturated_fat:'g',
+    calcium:'mg',phosphorus:'mg',magnesium:'mg',
+    sodium:'mg',potassium:'mg',iron:'mg',copper:'mg',selenium:'mcg',zinc:'mg',
+    vitamin_a:'mcg',vitamin_c:'mg',vitamin_e:'mg',
+    thiamin:'mg',riboflavin:'mg',niacin:'mg',vitamin_b6:'mg',folate:'mcg'
+  };
+  
+  let extraNutrients='';
+  for(const[key,name] of Object.entries(nutrientNames)){
+    if(n[key]!=null){
+      const unit=nutrientUnits[key]||'';
+      extraNutrients+=`<div class="mr"><div class="mh"><span class="mn">${name}</span><span class="mv" id="nut-${i}-${key}">${f1(n[key])} ${unit}</span></div></div>`;
+    }
+  }
+  
+  const hasExtra=extraNutrients.length>0;
+  
   return `
   <article class="nc" style="animation-delay:${i*0.07}s" data-idx="${i}" data-base-w="${w}"
-    data-cal="${n.calories??0}" data-pro="${n.protein??0}" data-carb="${n.carbs??0}" data-fat="${n.fat??0}">
+    data-cal="${n.calories??0}" data-pro="${n.protein??0}" data-carb="${n.carbs??0}" data-fat="${n.fat??0}"
+    data-nutrients='${JSON.stringify(n)}'>
     <div class="nc-top">
       <div class="nc-head">
         <div class="nc-nw">
@@ -415,6 +451,17 @@ function buildCard(item,i){
         <div class="trk"><div class="fill ff" data-w="${fW}"></div></div>
       </div>
     </div>
+    ${hasExtra?`
+    <div class="nut-toggle" id="nut-toggle-${i}">
+      <button class="nut-btn" data-i="${i}" type="button">+ View All 27 Nutrients</button>
+    </div>
+    <div class="nut-extra" id="nut-extra-${i}" style="display:none;">
+      <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);padding:10px 18px 8px;border-top:1px solid var(--border)">Additional Nutrients</div>
+      <div class="nc-mac" style="padding:10px 18px">
+        ${extraNutrients}
+      </div>
+    </div>
+    `:''}
     <div class="nc-foot">
       <span class="sdot" style="background:${n.source==='INDB'?'var(--lime)':'var(--amber)'}"></span>
       <span class="stxt">DB: ${n.source||'—'}</span>
@@ -494,6 +541,15 @@ function attachEvents(){
     const calEl=document.getElementById('cal-'+i);
     calEl.style.color='var(--lime)';setTimeout(()=>calEl.style.color='',700);
     rebuildTotals();
+  }));
+
+  /* NUTRIENTS TOGGLE */
+  document.querySelectorAll('.nut-btn').forEach(btn=>btn.addEventListener('click',function(){
+    const i=this.dataset.i;
+    const extraDiv=document.getElementById('nut-extra-'+i);
+    const isHidden=extraDiv.style.display==='none';
+    extraDiv.style.display=isHidden?'block':'none';
+    this.textContent=isHidden?'- Hide Additional Nutrients':'+ View All 27 Nutrients';
   }));
 }
 
