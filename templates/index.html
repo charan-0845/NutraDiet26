@@ -471,6 +471,98 @@ function buildCard(item,i){
   </article>`;
 }
 
+function getAdditionalNutrientMeta(){
+  return {
+    names:{
+      fiber:'Fiber',sugars:'Sugars',cholesterol:'Cholesterol',
+      saturated_fat:'Saturated Fat',monounsaturated_fat:'Monounsaturated Fat',polyunsaturated_fat:'Polyunsaturated Fat',
+      calcium:'Calcium',phosphorus:'Phosphorus',magnesium:'Magnesium',
+      sodium:'Sodium',potassium:'Potassium',iron:'Iron',copper:'Copper',selenium:'Selenium',zinc:'Zinc',
+      vitamin_a:'Vitamin A',vitamin_c:'Vitamin C',vitamin_e:'Vitamin E',
+      thiamin:'Thiamin (B1)',riboflavin:'Riboflavin (B2)',niacin:'Niacin (B3)',vitamin_b6:'Vitamin B6',folate:'Folate'
+    },
+    units:{
+      fiber:'g',sugars:'g',cholesterol:'mg',
+      saturated_fat:'g',monounsaturated_fat:'g',polyunsaturated_fat:'g',
+      calcium:'mg',phosphorus:'mg',magnesium:'mg',
+      sodium:'mg',potassium:'mg',iron:'mg',copper:'mg',selenium:'mcg',zinc:'mg',
+      vitamin_a:'mcg',vitamin_c:'mg',vitamin_e:'mg',
+      thiamin:'mg',riboflavin:'mg',niacin:'mg',vitamin_b6:'mg',folate:'mcg'
+    }
+  };
+}
+
+function renderAdditionalNutrients(card,i,nutrients){
+  if(!card)return;
+  const {names,units}=getAdditionalNutrientMeta();
+  let extraHtml='';
+
+  for(const [key,name] of Object.entries(names)){
+    if(nutrients[key]!=null){
+      extraHtml+=`<div class="mr"><div class="mh"><span class="mn">${name}</span><span class="mv" id="nut-${i}-${key}">${f1(nutrients[key])} ${units[key]||''}</span></div></div>`;
+    }
+  }
+
+  const existingToggle=document.getElementById('nut-toggle-'+i);
+  const existingExtra=document.getElementById('nut-extra-'+i);
+
+  if(!extraHtml){
+    if(existingToggle)existingToggle.remove();
+    if(existingExtra)existingExtra.remove();
+    return;
+  }
+
+  if(existingExtra){
+    existingExtra.innerHTML=`
+      <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);padding:10px 18px 8px;border-top:1px solid var(--border)">Additional Nutrients</div>
+      <div class="nc-mac" style="padding:10px 18px">
+        ${extraHtml}
+      </div>
+    `;
+    return;
+  }
+
+  const toggle=document.createElement('div');
+  toggle.className='nut-toggle';
+  toggle.id='nut-toggle-'+i;
+  toggle.innerHTML=`<button class="nut-btn" data-i="${i}" type="button">+ View All 27 Nutrients</button>`;
+
+  const extra=document.createElement('div');
+  extra.className='nut-extra';
+  extra.id='nut-extra-'+i;
+  extra.style.display='none';
+  extra.innerHTML=`
+    <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);padding:10px 18px 8px;border-top:1px solid var(--border)">Additional Nutrients</div>
+    <div class="nc-mac" style="padding:10px 18px">
+      ${extraHtml}
+    </div>
+  `;
+
+  const footer=card.querySelector('.nc-foot');
+  if(footer){
+    footer.before(toggle);
+    footer.before(extra);
+  }
+}
+
+function scaleNutrients(nutrients,ratio){
+  const scaled={...nutrients};
+  for(const [key,value] of Object.entries(nutrients)){
+    if(typeof value==='number' && Number.isFinite(value) && !['match_score'].includes(key)){
+      scaled[key]=roundTo(value*ratio,2);
+    }
+  }
+  if(scaled.energy_kcal!=null){
+    scaled.calories=scaled.energy_kcal;
+  }
+  return scaled;
+}
+
+function roundTo(value,decimals=2){
+  const factor=10**decimals;
+  return Math.round(value*factor)/factor;
+}
+
 function attachEvents(){
   /* EDIT */
   document.querySelectorAll('.eb').forEach(btn=>btn.addEventListener('click',function(){
@@ -525,32 +617,15 @@ function attachEvents(){
     const newW=parseFloat(document.getElementById('wt-'+i).value)||100;
     const baseW=parseFloat(card.dataset.baseW)||100;
     const r=newW/baseW;
-    const nCal=(parseFloat(card.dataset.cal)||0)*r;
-    const nPro=(parseFloat(card.dataset.pro)||0)*r;
-    const nCarb=(parseFloat(card.dataset.carb)||0)*r;
-    const nFat=(parseFloat(card.dataset.fat)||0)*r;
-    document.getElementById('cal-'+i).textContent=f1(nCal);
-    document.getElementById('pro-'+i).textContent=f1(nPro)+' g';
-    document.getElementById('crb-'+i).textContent=f1(nCarb)+' g';
-    document.getElementById('fat-'+i).textContent=f1(nFat)+' g';
-    const fills=card.querySelectorAll('.fill');
-    const mx=Math.max(nPro,nCarb,nFat,1);
-    fills[0].style.width=Math.min(100,nPro/mx*100)+'%';
-    fills[1].style.width=Math.min(100,nCarb/mx*100)+'%';
-    fills[2].style.width=Math.min(100,nFat/mx*100)+'%';
+    const baseNutrients=JSON.parse(card.dataset.nutrients||'{}');
+    const scaledNutrients=scaleNutrients(baseNutrients,r);
+    updateCardNutrition(i,scaledNutrients,newW);
     const calEl=document.getElementById('cal-'+i);
     calEl.style.color='var(--lime)';setTimeout(()=>calEl.style.color='',700);
-    rebuildTotals();
   }));
 
   /* NUTRIENTS TOGGLE */
-  document.querySelectorAll('.nut-btn').forEach(btn=>btn.addEventListener('click',function(){
-    const i=this.dataset.i;
-    const extraDiv=document.getElementById('nut-extra-'+i);
-    const isHidden=extraDiv.style.display==='none';
-    extraDiv.style.display=isHidden?'block':'none';
-    this.textContent=isHidden?'- Hide Additional Nutrients':'+ View All 27 Nutrients';
-  }));
+  document.querySelectorAll('.nc').forEach(card=>attachNutrientToggle(card));
 }
 
 async function refetchNutritionForCard(i,foodName){
@@ -586,6 +661,7 @@ function updateCardNutrition(i,n,weight){
   card.dataset.pro=pro??0;
   card.dataset.carb=carb??0;
   card.dataset.fat=fat??0;
+  card.dataset.nutrients=JSON.stringify(n);
   document.getElementById('cal-'+i).textContent=f1(cal);
   document.getElementById('pro-'+i).textContent=f1(pro)+' g';
   document.getElementById('crb-'+i).textContent=f1(carb)+' g';
@@ -606,7 +682,22 @@ function updateCardNutrition(i,n,weight){
   if(fills[0])fills[0].style.width=Math.min(100,proVal/mx*100)+'%';
   if(fills[1])fills[1].style.width=Math.min(100,carbVal/mx*100)+'%';
   if(fills[2])fills[2].style.width=Math.min(100,fatVal/mx*100)+'%';
+  renderAdditionalNutrients(card,i,n);
+  attachNutrientToggle(card);
   rebuildTotals();
+}
+
+function attachNutrientToggle(card){
+  const btn=card.querySelector('.nut-btn');
+  if(!btn||btn.dataset.bound==='true')return;
+  btn.dataset.bound='true';
+  btn.addEventListener('click',function(){
+    const i=this.dataset.i;
+    const extraDiv=document.getElementById('nut-extra-'+i);
+    const isHidden=extraDiv.style.display==='none';
+    extraDiv.style.display=isHidden?'block':'none';
+    this.textContent=isHidden?'- Hide Additional Nutrients':'+ View All 27 Nutrients';
+  });
 }
 
 function rebuildTotals(){
